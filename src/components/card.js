@@ -15,7 +15,6 @@ export function createCard(data, deleteCallback, toogleHeartCallback, openBigIma
   photoCardEl.src = data.link;
   photoCardEl.alt = data.name;
 
-
   //Работаю с иконкой сердца
   const likeHeart = newCard.querySelector(".card__like-button");
   likeHeart.addEventListener('click', () => {
@@ -32,7 +31,6 @@ export function createCard(data, deleteCallback, toogleHeartCallback, openBigIma
     openModal(popupImg)
     openBigImageCallback(newCard, photoCardEl)
   })
-
 
   return newCard;
 }

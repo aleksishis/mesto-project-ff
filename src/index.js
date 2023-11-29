@@ -15,21 +15,32 @@ const formAddCard = popupAddCard.querySelector('.popup__form')
 
 //Buttons open & close//
 const openPopupBtn = document.querySelector(".profile__edit-button");
-export const closeButtons = document.querySelectorAll('.popup__close');
+const closeButtons = document.querySelectorAll('.popup__close');
 const openBtnAddCard = document.querySelector('.profile__add-button');
+
+const popupImage = document.querySelector('.popup__image');
+const popupCaption = document.querySelector('.popup__caption');
 
 
 // @todo: DOM узлы
 const listContainer = document.querySelector('.places__list');
+
+
 renderCards(initialCards, deleteCard, toogleHeart, openBigImage);
+
+closeButtons.forEach((button) => {
+  button.addEventListener('click', () => closeModal(button.closest('.popup')));
+});
 
 // @todo: Функция октрытия попапа картинки
 function openBigImage(newCard, photoCardEl) {
   openModal(popupImg);
-  document.querySelector('.popup__image').src = photoCardEl.src;
-  document.querySelector('.popup__caption').textContent = newCard.querySelector('.card__title').textContent;
-  document.querySelector('.popup__image').src = photoCardEl.src;
-  document.querySelector('.popup__image').alt = newCard.querySelector('.card__title').textContent;
+  const cardTitle = newCard.querySelector('.card__title');
+
+  popupImage.src = photoCardEl.src;
+  popupCaption.textContent = cardTitle.textContent;
+  popupImg.src = photoCardEl.src;
+  popupImg.alt = cardTitle.textContent;
 }
 
 //? @todo: Вывести карточки на страницу
@@ -40,10 +51,6 @@ function renderCards(cards, deleteCallback, toogleHeartCallback, openBigImageCal
     listContainer.appendChild(cardElement);
   });
 }
-
-
-
-
 //?Открытие и закрытие попапа popupEditProfile
 openPopupBtn.addEventListener('click', () => openModal(popupEditProfile))
 //closeButtons.addEventListener('click', () => closeModal(popupEditProfile)) 
