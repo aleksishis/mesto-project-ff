@@ -1,9 +1,8 @@
-
 import './pages/index.css';
 import { initialCards } from './cards';
 import { createCard, toogleHeart, deleteCard } from './components/card';
 import { openModal, closeModal } from './components/modal';
-
+import { enableValidation, clearValidation, setEventListeners } from './components/validation';
 //All modal window//
 const popupEditProfile = document.querySelector('.popup_type_edit')
 const popupAddCard = document.querySelector('.popup_type_new-card');
@@ -28,8 +27,21 @@ const listContainer = document.querySelector('.places__list');
 
 renderCards(initialCards, deleteCard, toogleHeart, openBigImage);
 
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}
+
+enableValidation(validationConfig);
+
 closeButtons.forEach((button) => {
-  button.addEventListener('click', () => closeModal(button.closest('.popup')));
+  button.addEventListener('click', () => {
+    closeModal(button.closest('.popup'));
+  });
 });
 
 // @todo: Функция октрытия попапа картинки
@@ -51,11 +63,15 @@ function renderCards(cards, deleteCallback, toogleHeartCallback, openBigImageCal
     listContainer.appendChild(cardElement);
   });
 }
-//?Открытие и закрытие попапа popupEditProfile
-openPopupBtn.addEventListener('click', () => openModal(popupEditProfile))
-//closeButtons.addEventListener('click', () => closeModal(popupEditProfile)) 
+//? Открытие и закрытие попапа popupEditProfile
+openPopupBtn.addEventListener('click', () => {
+  openModal(popupEditProfile);
+  nameInput.value = profileName.textContent;
+  jobInput.value = profileJob.textContent;
+  setEventListeners(formEditProfile, validationConfig);
+});
 
-// Находим поля формы в DOM
+//? Находим поля формы в DOM
 const nameInput = formEditProfile.querySelector('.popup__input_type_name');
 const jobInput = formEditProfile.querySelector('.popup__input_type_description');
 
@@ -72,10 +88,16 @@ formEditProfile.addEventListener('submit', function (evt) {
   profileJob.textContent = jobInput.value;
   closeModal(popupEditProfile);
 
+  clearValidation(formEditProfile, validationConfig)
 });
 
 
-openBtnAddCard.addEventListener('click', () => openModal(popupAddCard))
+openBtnAddCard.addEventListener('click', () => {
+  openModal(popupAddCard);
+  formAddCard.reset();
+
+  clearValidation(formAddCard, validationConfig);
+})
 
 formAddCard.addEventListener('submit', function (event) {
   event.preventDefault();
@@ -92,3 +114,9 @@ formAddCard.addEventListener('submit', function (event) {
 //Добавление всем попапам класса popup_is-animated
 const allPops = document.querySelectorAll('.popup')
 allPops.forEach((pop) => pop.classList.add('popup_is-animated'))
+
+
+//!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ///
+
+
+
