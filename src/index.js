@@ -20,13 +20,14 @@ const openBtnAddCard = document.querySelector('.profile__add-button');
 const popupImage = document.querySelector('.popup__image');
 const popupCaption = document.querySelector('.popup__caption');
 
+const userAvatar = document.querySelector('.profile__image');
 
 // @todo: DOM узлы
 const listContainer = document.querySelector('.places__list');
 
 
 renderCards(initialCards, deleteCard, toogleHeart, openBigImage);
-
+loadUserInfo()
 const validationConfig = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -116,7 +117,27 @@ const allPops = document.querySelectorAll('.popup')
 allPops.forEach((pop) => pop.classList.add('popup_is-animated'))
 
 
-//!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ/////!ВАЛИДАЦИЯ///
+function loadUserInfo() {
+  fetch('https://nomoreparties.co/v1/wff-cohort-2/users/me ', {
+    headers: {
+      authorization: '29e47ff3-c405-4d45-9bbb-503bd9191003'
+    }
+  })
+    .then(res => res.json())
+    .then((userInfo) => {
+      profileName.textContent = userInfo.name;
+      profileJob.textContent = userInfo.about;
+      userAvatar.url = userInfo.avatar;
+    });
+}
 
-
-
+function loadCard() {
+  fetch('https://nomoreparties.co/v1/wff-cohort-2/cards', {
+    headers: {
+      authorization: '29e47ff3-c405-4d45-9bbb-503bd9191003'
+    }
+  })
+    .then(res => res.json())
+    .then(res => console.log(res))
+}
+loadCard()
