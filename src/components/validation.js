@@ -65,7 +65,7 @@ export function hideInputError(form, input, config) {
   input.classList.remove(config.inputErrorClass);
 }
 
-export function toggleSubmitButtonState(inputs, submitButton, config) {
+function toggleSubmitButtonState(inputs, submitButton, config) {
   const isValid = inputs.every((input) => input.validity.valid);
 
   if (isValid) {
