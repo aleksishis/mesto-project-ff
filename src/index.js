@@ -83,6 +83,8 @@ function renderCards(cards, deleteCallback, toogleHeartCallback, openBigImageCal
 }
 //? Открытие и закрытие попапа popupEditProfile
 openEditBtnPopup.addEventListener('click', () => {
+  openEditBtnPopup.disabled = false;
+  //openEditBtnPopup.setAttribute = true;
   openModal(popupEditProfile);
   nameInput.value = profileName.textContent;
   jobInput.value = profileJob.textContent;
@@ -144,7 +146,7 @@ formEditProfile.addEventListener('submit', function (evt) {
 
       })
       .finally(() => {
-        // Исходный текст кнопки после завершения запроса
+
         saveButton.textContent = 'Сохранить';
       });
 
@@ -175,7 +177,7 @@ formAddCard.addEventListener('submit', function (event) {
   setTimeout(() => {
     postCard(valueName, valueUrl)
       .then(newCard => {
-        // Обновление интерфейса с добавлением новой карточки
+
         const cardElement = createCard(newCard, deleteCard, toogleHeart, openBigImage, userInfo._id);
         listContainer.prepend(cardElement);
 
@@ -186,7 +188,7 @@ formAddCard.addEventListener('submit', function (event) {
         console.error('Ошибка добавления карточки:', error);
       })
       .finally(() => {
-        // Исходный текст кнопки после завершения запроса
+
         saveButton.textContent = 'Сохранить';
       });
 
@@ -210,7 +212,6 @@ formEditAvatar.addEventListener('submit', function (event) {
   setTimeout(() => {
     updateAvatar(avatarLink)
       .then(() => {
-        // Обновите аватар на странице
         userAvatar.style.backgroundImage = `url(${avatarLink})`;
         closeModal(popupEditAvatar);
       })
@@ -218,7 +219,6 @@ formEditAvatar.addEventListener('submit', function (event) {
         console.error('Ошибка обновления аватара:', error);
       })
       .finally(() => {
-        // Исходный текст кнопки после завершения запроса
         saveButton.textContent = 'Сохранить';
       });
   });
