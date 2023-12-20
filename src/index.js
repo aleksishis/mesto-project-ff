@@ -107,7 +107,6 @@ jobInput.value = profileJob.textContent;
 
 Promise.all([getUserInfo(), getInitialCards()])
   .then(([userInfo, initialCards]) => {
-    // Здесь можно выполнять дополнительные действия с полученными данными, если необходимо
     window.userInfo = userInfo;
     profileName.textContent = userInfo.name;
     profileJob.textContent = userInfo.about;
