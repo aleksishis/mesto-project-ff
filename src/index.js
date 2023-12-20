@@ -83,11 +83,12 @@ function renderCards(cards, deleteCallback, toogleHeartCallback, openBigImageCal
 }
 //? Открытие и закрытие попапа popupEditProfile
 openEditBtnPopup.addEventListener('click', () => {
-  openEditBtnPopup.disabled = false;
-  //openEditBtnPopup.setAttribute = true;
   openModal(popupEditProfile);
+
   nameInput.value = profileName.textContent;
   jobInput.value = profileJob.textContent;
+  const btn = formEditProfile.querySelector('.popup__button');
+
   //setEventListeners(formEditProfile, validationConfig);
   clearValidation(formEditProfile, validationConfig) // сделать так, чтобып
 });

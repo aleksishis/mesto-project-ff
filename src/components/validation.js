@@ -44,12 +44,25 @@ export function setEventListeners(form, config) {
 }
 
 export function checkInputValidity(form, input, config) {
+  if (input.validity.patternMismatch) {
+    const errorMessage = input.dataset.errorMessage || input.validationMessage;
+
+    if (input.value.trim() === '') {
+      input.setCustomValidity('');
+    } else {
+      input.setCustomValidity(errorMessage);
+    }
+  } else {
+    input.setCustomValidity('');
+  }
+
   if (!input.validity.valid) {
     showInputError(form, input, input.validationMessage, config);
   } else {
     hideInputError(form, input, config);
   }
 }
+
 
 export function showInputError(form, input, errorMessage, config) {
   const errorElement = form.querySelector(`.${input.id}-error`);
