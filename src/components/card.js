@@ -1,77 +1,81 @@
 
-import { openModal } from "./modal";
-import { popupImg } from "..";
-import { deleteCardFromServer, postLike, deleteLike } from "./api"
+import { deleteCardFromServer, postLike, deleteLike } from "./api";
 
-//? @todo: Функция создания карточки
+// Функция создания карточки
 export function createCard(data, deleteCallback, toogleHeartCallback, openBigImageCallback, ownerId) {
   const cardTemplate = document.getElementById('card-template');
-  const newCard = cardTemplate.content.firstElementChild.cloneNode(true); // Клонирую шаблон карточки
-  // Устанавливаю значения вложенных элементов
-  const titleCardel = newCard.querySelector('.card__title')
+  const newCard = cardTemplate.content.firstElementChild.cloneNode(true);
+
+  const titleCardel = newCard.querySelector('.card__title');
   const photoCardEl = newCard.querySelector(".card__image");
+  const likeCountElement = newCard.querySelector('.card__like-count');
+  const likeHeart = newCard.querySelector(".card__like-button");
+  const deleteIcon = newCard.querySelector('.card__delete-button');
 
   titleCardel.textContent = data.name;
   photoCardEl.src = data.link;
   photoCardEl.alt = data.name;
-
-  const likeCountElement = newCard.querySelector('.card__like-count');
   likeCountElement.textContent = data.likes.length;
-  //Работаю с иконкой сердца
-  const likeHeart = newCard.querySelector(".card__like-button");
+
   likeHeart.addEventListener('click', () => {
-    toogleHeartCallback(likeHeart, likeCountElement, data._id);
-    likeCountElement.textContent = data.likes.length;
+    toogleHeartCallback(likeHeart, likeCountElement, data._id, ownerId);
   });
+
   const cardId = data._id;
 
+  const { likes, isLikedByOwner } = loadLikesState(cardId, ownerId);
+  likeHeart.classList.toggle("card__like-button_is-active", isLikedByOwner);
+  likeCountElement.textContent = likes.length;
 
-  // Добавляем обработчик клика на иконку удаления только для карточек, созданных текущим пользователем
   if (ownerId === data.owner._id) {
-    const deleteIcon = newCard.querySelector('.card__delete-button');
     deleteIcon.addEventListener('click', () => {
-      deleteCallback(newCard, cardId); // Передаем DOM-элемент карточки в колбэк
+      deleteCallback(newCard, cardId);
     });
   } else {
-    // Если карточка не создана текущим пользователем, скрываем иконку удаления
-    const deleteIcon = newCard.querySelector('.card__delete-button');
     deleteIcon.style.display = 'none';
   }
 
-  // Добавляем обработчик клика на иконку удаления
-  //const deleteIcon = newCard.querySelector('.card__delete-button');
-  //deleteIcon.addEventListener('click', () => {
-  //  deleteCallback(newCard); // Передаем DOM-элемент карточки в колбэк  и  // Вызываем переданный колбэк с идентификатором карточки
-  //})
-
-  //  ОТКРЫТИЕ ПОПАПА С КАРТИНКОЙ 
   photoCardEl.addEventListener('click', () => {
-    openBigImageCallback(newCard, photoCardEl)
-  })
+    openBigImageCallback(newCard, photoCardEl);
+  });
+
   return newCard;
 }
 
-//@todo: Функция обработка лайка
-export function toogleHeart(heart, likeCountElement, cardId) {
+// Функция обработка лайка
+export function toogleHeart(heart, likeCountElement, cardId, ownerId) {
   const isLiked = heart.classList.contains("card__like-button_is-active");
+  const likeMethod = isLiked ? deleteLike : postLike;
 
+  likeMethod(cardId)
+    .then(updatedCard => {
+      // Сохраняем информацию о лайке в локальное хранилище
+      localStorage.setItem(`like_${cardId}`, JSON.stringify(updatedCard.likes));
 
-
-  if (!isLiked) {
-    postLike(cardId)
-      .then(updatedCard => {
-        heart.classList.add("card__like-button_is-active");
-        likeCountElement.textContent = updatedCard.likes.length;
-      });
-  } else {
-    deleteLike(cardId)
-      .then(updatedCard => {
-        heart.classList.remove("card__like-button_is-active");
-        likeCountElement.textContent = updatedCard.likes.length;
-      });
-  }
+      // Отображаем состояние лайка
+      heart.classList.toggle("card__like-button_is-active", updatedCard.likes.some(like => like._id === ownerId));
+      likeCountElement.textContent = updatedCard.likes.length;
+    })
+    .catch(error => {
+      console.error('Ошибка лайка:', error);
+    });
 }
-//@todo: Функция удаления карточки
+
+// Функция загрузки состояния лайков при загрузке страницы
+export function loadLikesState(cardId, ownerId) {
+  const storedLikes = localStorage.getItem(`like_${cardId}`);
+
+  if (storedLikes) {
+    const likes = JSON.parse(storedLikes);
+    const isLikedByOwner = likes.some(like => like._id === ownerId);
+
+    return { likes, isLikedByOwner };
+  }
+
+  return { likes: [], isLikedByOwner: false };
+}
+
+// Функция удаления карточки
 export function deleteCard(cardElement, cardId) {
   deleteCardFromServer(cardId)
     .then(() => {
@@ -81,5 +85,3 @@ export function deleteCard(cardElement, cardId) {
       console.error('Ошибка удаления карточки:', error);
     });
 }
-
-

@@ -19,8 +19,7 @@ export function clearValidation(form, config) {
     hideInputError(form, input, config);
   });
   if (submitButton) {
-    submitButton.classList.add(config.inactiveButtonClass);
-    submitButton.disabled = true;
+    disableSubmitButton(submitButton, config)
   }
 
 }
@@ -85,7 +84,12 @@ function toggleSubmitButtonState(inputs, submitButton, config) {
     submitButton.classList.remove(config.inactiveButtonClass);
     submitButton.disabled = false;
   } else {
-    submitButton.classList.add(config.inactiveButtonClass);
-    submitButton.disabled = true;
+    disableSubmitButton(submitButton, config)
   }
+}
+
+
+function disableSubmitButton(submitButton, config) {
+  submitButton.classList.add(config.inactiveButtonClass);
+  submitButton.disabled = true;
 }
