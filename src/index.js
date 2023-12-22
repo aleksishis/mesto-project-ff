@@ -35,14 +35,7 @@ userAvatar.addEventListener('click', () => { openModal(popupEditAvatar) });
 // @todo: DOM узлы
 const listContainer = document.querySelector('.places__list');
 
-//getInitialCards()
-//  .then(cards => {
-//    listContainer.innerHTML = ''; // Очищаем контейнер перед загрузкой новых карточек
-//    renderCards(cards, deleteCard, toogleHeart, openBigImage);
-//  })
-//  .catch(error => {
-//    console.error('Ошибка загрузки карточек с сервера', error);
-//  });
+
 
 const validationConfig = {
   formSelector: '.popup__form',
@@ -105,7 +98,6 @@ nameInput.value = profileName.textContent;
 jobInput.value = profileJob.textContent;
 
 
-
 Promise.all([getUserInfo(), getInitialCards()])
   .then(([userInfo, initialCards]) => {
     window.userInfo = userInfo;
@@ -117,8 +109,8 @@ Promise.all([getUserInfo(), getInitialCards()])
     listContainer.innerHTML = '';
 
     // Рендерим карточки
-    renderCards(initialCards, deleteCard, toogleHeart, openBigImage, window.userInfo._id);
-    return getInitialCards()
+    renderCards(initialCards, deleteCard, toogleHeart, openBigImage, userInfo._id);
+    //return getInitialCards()
   })
   .catch(errors => {
     console.error('Произошла ошибка:', errors);
@@ -132,6 +124,15 @@ Promise.all([getUserInfo(), getInitialCards()])
 //    userAvatar.url = userInfo.avatar;
 //    return getInitialCards()
 //  })
+
+//getInitialCards()
+//  .then(cards => {
+//    listContainer.innerHTML = ''; // Очищаем контейнер перед загрузкой новых карточек
+//    renderCards(cards, deleteCard, toogleHeart, openBigImage);
+//  })
+//  .catch(error => {
+//    console.error('Ошибка загрузки карточек с сервера', error);
+//  });
 
 formEditProfile.addEventListener('submit', function (evt) {
   evt.preventDefault();

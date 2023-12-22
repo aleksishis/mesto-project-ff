@@ -16,8 +16,14 @@ const handleResponse = (res) => {
 export const getInitialCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
-  }).then(handleResponse);
-}
+  })
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    });
+};
 
 export const updateUserInfo = (name, about) => {
   return fetch(`${config.baseUrl}/users/me`, {

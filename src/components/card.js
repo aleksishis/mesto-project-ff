@@ -15,17 +15,23 @@ export function createCard(data, deleteCallback, toogleHeartCallback, openBigIma
   titleCardel.textContent = data.name;
   photoCardEl.src = data.link;
   photoCardEl.alt = data.name;
+
   likeCountElement.textContent = data.likes.length;
+
+  //likeHeart.addEventListener('click', () => {
+  //  toogleHeartCallback(likeHeart, likeCountElement, data._id, ownerId);
+  //});
+
+
+
+  const isLikedByOwner = data.likes.some(like => like._id === ownerId);
+  likeHeart.classList.toggle("card__like-button_is-active", isLikedByOwner);
 
   likeHeart.addEventListener('click', () => {
     toogleHeartCallback(likeHeart, likeCountElement, data._id, ownerId);
   });
-
   const cardId = data._id;
-
-  const { likes, isLikedByOwner } = loadLikesState(cardId, ownerId);
-  likeHeart.classList.toggle("card__like-button_is-active", isLikedByOwner);
-  likeCountElement.textContent = likes.length;
+  likeCountElement.textContent = data.likes.length;
 
   if (ownerId === data.owner._id) {
     deleteIcon.addEventListener('click', () => {
@@ -34,6 +40,7 @@ export function createCard(data, deleteCallback, toogleHeartCallback, openBigIma
   } else {
     deleteIcon.style.display = 'none';
   }
+
 
   photoCardEl.addEventListener('click', () => {
     openBigImageCallback(newCard, photoCardEl);
@@ -49,10 +56,7 @@ export function toogleHeart(heart, likeCountElement, cardId, ownerId) {
 
   likeMethod(cardId)
     .then(updatedCard => {
-      // Сохраняем информацию о лайке в локальное хранилище
       localStorage.setItem(`like_${cardId}`, JSON.stringify(updatedCard.likes));
-
-      // Отображаем состояние лайка
       heart.classList.toggle("card__like-button_is-active", updatedCard.likes.some(like => like._id === ownerId));
       likeCountElement.textContent = updatedCard.likes.length;
     })
